@@ -1,0 +1,205 @@
+/*
+ * author: Clément Levallois
+ */
+package net.clementlevallois.umigon.tokenizer.controller;
+
+import com.vdurmont.emoji.EmojiParser;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import net.clementlevallois.umigon.model.Term;
+import net.clementlevallois.umigon.model.TextFragment;
+import net.clementlevallois.umigon.model.TypeOfTextFragment;
+import net.clementlevallois.umigon.model.WhiteSpace;
+
+/**
+ *
+ * @author LEVALLOIS
+ */
+public class UmigonTokenizer {
+
+    public static void main(String[] args) throws IOException {
+        String text = "I love this track #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀";
+        System.out.println("text: " + text);
+        UmigonTokenizer controller = new UmigonTokenizer();
+        List<TextFragment> textFragments = controller.tokenize(text);
+        String beautiffiedPrint = controller.printTextFragments(textFragments);
+        System.out.println(beautiffiedPrint);
+    }
+
+    private enum CurrentFragment {
+        CURR_FRAGMENT_IS_WHITE_SPACE, CURR_FRAGMENT_IS_PUNCT, CURR_FRAGMENT_IS_TERM, CURR_FRAGMENT_IS_NOT_STARTED, CURR_FRAGMENT_IS_EMOJI
+    }
+
+    public List<TextFragment> tokenize(String text) throws IOException {
+        PatternOfInterestChecker.loadPatternsOfInterest();
+        List<TextFragment> textFragments = new ArrayList();
+
+        boolean textFragmentStarted = false;
+        boolean isCurrCodePointWhiteSpace = false;
+        boolean isCurrCodePointTerm = false;
+        boolean isCurrCodePointEmoji = false;
+        boolean isCurrCodPointPunctuation = false;
+        CurrentFragment currFragment = CurrentFragment.CURR_FRAGMENT_IS_NOT_STARTED;
+        WhiteSpace whiteSpaceFragment = null;
+        Term term = null;
+        int i = 0;
+
+        int[] codePoints = text.codePoints().toArray();
+
+        System.out.println("length of the text: " + text.length());
+        System.out.println("number of code points: " + codePoints.length);
+
+        for (int codePoint : codePoints) {
+            String stringOfCodePoint = Character.toString(codePoint);
+            if (stringOfCodePoint.equals("w")) {
+                System.out.println("stop there is a w");
+            }
+
+            //check if this is a punctuation mark
+            isCurrCodPointPunctuation = Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", stringOfCodePoint);
+
+            // check if this is an emoji
+            List<String> extractEmojis = EmojiParser.extractEmojis(stringOfCodePoint);
+            isCurrCodePointEmoji = !extractEmojis.isEmpty();
+
+            // check if this is a whitespace
+            isCurrCodePointWhiteSpace = stringOfCodePoint.isBlank();
+
+            switch (currFragment) {
+                case CURR_FRAGMENT_IS_WHITE_SPACE:
+                    if (isCurrCodePointWhiteSpace) {
+                        whiteSpaceFragment.addStringToString(stringOfCodePoint);
+                        if (stringOfCodePoint.equals("\n")) {
+                            whiteSpaceFragment.setSentenceOrLineBreak(Boolean.TRUE);
+                        }
+                    } else if (!isCurrCodePointEmoji) {
+                        textFragments.add(whiteSpaceFragment);
+                        textFragmentStarted = false;
+                    } else {
+                        textFragments.add(whiteSpaceFragment);
+                        textFragmentStarted = false;
+                        term = new Term();
+                        currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
+                        term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
+                        term.setIndexCardinal(i);
+                        term.setIndexOrdinal(textFragments.size());
+                        term.addStringToString(stringOfCodePoint);
+                        textFragments.add(term);
+                    }
+                    break;
+
+                case CURR_FRAGMENT_IS_TERM:
+                    if (isCurrCodePointWhiteSpace | isCurrCodPointPunctuation) {
+                        textFragments.add(term);
+                        textFragmentStarted = false;
+                    } else if (!isCurrCodePointEmoji) {
+                        term.addStringToString(stringOfCodePoint);
+                    } else {
+                        textFragments.add(term);
+                        textFragmentStarted = false;
+                        term = new Term();
+                        currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
+                        term.setIndexCardinal(i);
+                        term.setIndexOrdinal(textFragments.size());
+                        term.addStringToString(stringOfCodePoint);
+                        textFragments.add(term);
+                    }
+                    break;
+
+                case CURR_FRAGMENT_IS_PUNCT:
+                    if (!isCurrCodPointPunctuation) {
+                        if (term.getString().codePoints().toArray().length > 1) {
+                            boolean containsOnomatopaesOrAsciiEmoticons = PatternOfInterestChecker.containsOnomatopaesOrAsciiEmoticons(term.getString());
+                            if (containsOnomatopaesOrAsciiEmoticons) {
+                                textFragments.add(term);
+                                textFragmentStarted = false;
+                            }
+                        } else {
+                            int[] codePointsPunct = term.getString().codePoints().toArray();
+                            for (int codePointPunct : codePointsPunct) {
+                                String punct = Character.toString(codePointPunct);
+                                term = new Term();
+                                currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
+                                term.setIndexCardinal(i);
+                                term.setIndexOrdinal(textFragments.size());
+                                term.addStringToString(punct);
+                                textFragments.add(term);
+                            }
+                            textFragmentStarted = false;
+                        }
+                    } else {
+                        term.addStringToString(stringOfCodePoint);
+                    }
+                    break;
+
+                case CURR_FRAGMENT_IS_EMOJI:
+                    if (isCurrCodePointEmoji) {
+                        term = new Term();
+                        currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
+                        term.setIndexCardinal(i);
+                        term.setIndexOrdinal(textFragments.size());
+                        term.addStringToString(stringOfCodePoint);
+                        textFragments.add(term);
+                        textFragmentStarted = false;
+                    }
+                    break;
+
+            }
+
+            if (!textFragmentStarted) {
+                if (isCurrCodePointWhiteSpace) {
+                    textFragmentStarted = true;
+                    whiteSpaceFragment = new WhiteSpace();
+                    whiteSpaceFragment.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.WHITE_SPACE);
+                    whiteSpaceFragment.setIndexCardinal(i);
+                    whiteSpaceFragment.setIndexOrdinal(textFragments.size());
+                    currFragment = CurrentFragment.CURR_FRAGMENT_IS_WHITE_SPACE;
+                    whiteSpaceFragment.addStringToString(stringOfCodePoint);
+                    if (stringOfCodePoint.equals("\n")) {
+                        whiteSpaceFragment.setSentenceOrLineBreak(Boolean.TRUE);
+                    }
+                } else if (!isCurrCodePointEmoji & !isCurrCodPointPunctuation) {
+                    textFragmentStarted = true;
+                    term = new Term();
+                    term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.NGRAM);
+                    currFragment = CurrentFragment.CURR_FRAGMENT_IS_TERM;
+                    term.setIndexCardinal(i);
+                    term.setIndexOrdinal(textFragments.size());
+                    term.addStringToString(stringOfCodePoint);
+                } else if (isCurrCodPointPunctuation) {
+                    textFragmentStarted = true;
+                    term = new Term();
+                    term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
+                    currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
+                    term.setIndexCardinal(i);
+                    term.setIndexOrdinal(textFragments.size());
+                    term.addStringToString(stringOfCodePoint);
+                }
+            }
+            i++;
+            if (i >= codePoints.length) {
+                if (isCurrCodePointWhiteSpace & whiteSpaceFragment != null) {
+                    textFragments.add(whiteSpaceFragment);
+                }
+                if (!isCurrCodePointWhiteSpace & term != null) {
+                    textFragments.add(term);
+                }
+            }
+        }
+
+        return textFragments;
+
+    }
+
+    private String printTextFragments(List<TextFragment> textFragments) {
+        StringBuilder sb = new StringBuilder();
+        for (TextFragment text : textFragments) {
+            sb.append("text fragment: ").append(text.getString());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+}
