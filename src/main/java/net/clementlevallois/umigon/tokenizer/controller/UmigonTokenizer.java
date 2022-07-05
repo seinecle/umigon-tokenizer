@@ -20,7 +20,7 @@ import net.clementlevallois.umigon.model.WhiteSpace;
 public class UmigonTokenizer {
 
     public static void main(String[] args) throws IOException {
-        String text = "I love this track #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
+        String text = "J'aime la \"vie\" #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
         System.out.println("text: " + text);
         UmigonTokenizer controller = new UmigonTokenizer();
         List<TextFragment> textFragments = controller.tokenize(text);
@@ -82,7 +82,7 @@ public class UmigonTokenizer {
                         textFragmentStarted = false;
                         term = new Term();
                         currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
-                        term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
+                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
                         term.setIndexCardinal(i);
                         term.setIndexOrdinal(textFragments.size());
                         term.addStringToString(stringOfCodePoint);
@@ -100,6 +100,7 @@ public class UmigonTokenizer {
                         textFragments.add(term);
                         textFragmentStarted = false;
                         term = new Term();
+                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
                         currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
                         term.setIndexCardinal(i);
                         term.setIndexOrdinal(textFragments.size());
@@ -113,6 +114,7 @@ public class UmigonTokenizer {
                         if (term.getString().codePoints().toArray().length > 1) {
                             boolean containsOnomatopaesOrAsciiEmoticons = PatternOfInterestChecker.containsOnomatopaesOrAsciiEmoticons(term.getString());
                             if (containsOnomatopaesOrAsciiEmoticons) {
+                                term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOTICON_IN_ASCII);
                                 textFragments.add(term);
                                 textFragmentStarted = false;
                             } else {
@@ -120,6 +122,7 @@ public class UmigonTokenizer {
                                 for (int codePointPunct : codePointsPunct) {
                                     String punct = Character.toString(codePointPunct);
                                     term = new Term();
+                                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
                                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
                                     term.setIndexCardinal(i);
                                     term.setIndexOrdinal(textFragments.size());
@@ -144,6 +147,7 @@ public class UmigonTokenizer {
                         term.setIndexCardinal(i);
                         term.setIndexOrdinal(textFragments.size());
                         term.addStringToString(stringOfCodePoint);
+                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
                         textFragments.add(term);
                         textFragmentStarted = false;
                     }
@@ -155,7 +159,7 @@ public class UmigonTokenizer {
                 if (isCurrCodePointWhiteSpace) {
                     textFragmentStarted = true;
                     whiteSpaceFragment = new WhiteSpace();
-                    whiteSpaceFragment.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.WHITE_SPACE);
+                    whiteSpaceFragment.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.WHITE_SPACE);
                     whiteSpaceFragment.setIndexCardinal(i);
                     whiteSpaceFragment.setIndexOrdinal(textFragments.size());
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_WHITE_SPACE;
@@ -166,7 +170,7 @@ public class UmigonTokenizer {
                 } else if (!isCurrCodePointEmoji & !isCurrCodPointPunctuation) {
                     textFragmentStarted = true;
                     term = new Term();
-                    term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.NGRAM);
+                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.TERM);
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_TERM;
                     term.setIndexCardinal(i);
                     term.setIndexOrdinal(textFragments.size());
@@ -174,7 +178,7 @@ public class UmigonTokenizer {
                 } else if (isCurrCodPointPunctuation) {
                     textFragmentStarted = true;
                     term = new Term();
-                    term.setTypeOfToken(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
+                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
                     term.setIndexCardinal(i);
                     term.setIndexOrdinal(textFragments.size());
@@ -193,6 +197,7 @@ public class UmigonTokenizer {
                         if (term.getString().codePoints().toArray().length > 1) {
                             boolean containsOnomatopaesOrAsciiEmoticons = PatternOfInterestChecker.containsOnomatopaesOrAsciiEmoticons(term.getString());
                             if (containsOnomatopaesOrAsciiEmoticons) {
+                                term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOTICON_IN_ASCII);
                                 textFragments.add(term);
                             } else {
                                 int[] codePointsPunct = term.getString().codePoints().toArray();
@@ -203,6 +208,7 @@ public class UmigonTokenizer {
                                     term.setIndexCardinal(i);
                                     term.setIndexOrdinal(textFragments.size());
                                     term.addStringToString(punct);
+                                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
                                     textFragments.add(term);
                                 }
                             }
