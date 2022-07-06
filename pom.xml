@@ -16,7 +16,11 @@
             <artifactId>umigon-model</artifactId>
             <version>1.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>net.clementlevallois.utils</groupId>
+            <artifactId>utils-core</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>

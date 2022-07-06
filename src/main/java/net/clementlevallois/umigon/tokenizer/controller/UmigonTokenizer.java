@@ -6,12 +6,18 @@ package net.clementlevallois.umigon.tokenizer.controller;
 import com.vdurmont.emoji.EmojiParser;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
+import net.clementlevallois.umigon.model.NonWord;
+import net.clementlevallois.umigon.model.PatternOfInterest;
 import net.clementlevallois.umigon.model.Term;
 import net.clementlevallois.umigon.model.TextFragment;
 import net.clementlevallois.umigon.model.TypeOfTextFragment;
 import net.clementlevallois.umigon.model.WhiteSpace;
+import net.clementlevallois.utils.RepeatedCharactersRemover;
+import net.clementlevallois.utils.TextCleaningOps;
 
 /**
  *
@@ -22,8 +28,9 @@ public class UmigonTokenizer {
     public static void main(String[] args) throws IOException {
         String text = "J'aime la \"vie\" #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
         System.out.println("text: " + text);
+        Set<String> languageSpecificLexicon = new HashSet();
         UmigonTokenizer controller = new UmigonTokenizer();
-        List<TextFragment> textFragments = controller.tokenize(text);
+        List<TextFragment> textFragments = controller.tokenize(text, languageSpecificLexicon);
         String beautiffiedPrint = controller.printTextFragments(textFragments);
         System.out.println(beautiffiedPrint);
     }
@@ -32,7 +39,7 @@ public class UmigonTokenizer {
         CURR_FRAGMENT_IS_WHITE_SPACE, CURR_FRAGMENT_IS_PUNCT, CURR_FRAGMENT_IS_TERM, CURR_FRAGMENT_IS_NOT_STARTED, CURR_FRAGMENT_IS_EMOJI
     }
 
-    public List<TextFragment> tokenize(String text) throws IOException {
+    public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) throws IOException {
         PatternOfInterestChecker.loadPatternsOfInterest();
         List<TextFragment> textFragments = new ArrayList();
 
@@ -53,9 +60,9 @@ public class UmigonTokenizer {
 
         for (int codePoint : codePoints) {
             String stringOfCodePoint = Character.toString(codePoint);
-            if (stringOfCodePoint.equals("😀")) {
-                System.out.println("stop there is a 😀");
-            }
+//            if (stringOfCodePoint.equals("😀")) {
+//                System.out.println("stop there is a 😀");
+//            }
 
             //check if this is a punctuation mark
             isCurrCodPointPunctuation = Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", stringOfCodePoint);
@@ -91,12 +98,32 @@ public class UmigonTokenizer {
                     break;
 
                 case CURR_FRAGMENT_IS_TERM:
-                    if ((isCurrCodePointWhiteSpace & !term.getString().startsWith("@") & !term.getString().startsWith("#")) | (isCurrCodPointPunctuation && !term.getString().startsWith("http"))) {
-                        textFragments.add(term);
+                    if ((isCurrCodePointWhiteSpace) | (isCurrCodPointPunctuation && !term.getString().startsWith("http"))) {
+                        String originalForm = term.getString();
+                        String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
+                        term.setCleanedForm(cleanedForm);
+                        term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
+
+                        // some term fragments can be onomatopaes (wooow) or texto speak (lol, rofl)
+                        // we call them 'non words' (for lack of better name)
+                        // they must be detected to be attributed a specific type (different from "term"):
+                        PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getCleanedAndStrippedForm());
+                        if (returnsMatchOrNot.getMatched()) {
+                            NonWord nonWord = new NonWord();
+                            nonWord.setIndexCardinal(term.getIndexCardinal());
+                            nonWord.setIndexOrdinal(term.getIndexOrdinal());
+                            nonWord.setString(term.getString());
+                            nonWord.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
+                            nonWord.setPoi(returnsMatchOrNot);
+                            textFragments.add(nonWord);
+                        } else {
+                            textFragments.add(term);
+                        }
                         textFragmentStarted = false;
                     } else if (!isCurrCodePointEmoji) {
                         term.addStringToString(stringOfCodePoint);
-                    } else {
+                    } else if (isCurrCodePointEmoji) {
                         textFragments.add(term);
                         textFragmentStarted = false;
                         term = new Term();
@@ -112,9 +139,9 @@ public class UmigonTokenizer {
                 case CURR_FRAGMENT_IS_PUNCT:
                     if (!isCurrCodPointPunctuation) {
                         if (term.getString().codePoints().toArray().length > 1) {
-                            boolean containsOnomatopaesOrAsciiEmoticons = PatternOfInterestChecker.containsOnomatopaesOrAsciiEmoticons(term.getString());
-                            if (containsOnomatopaesOrAsciiEmoticons) {
-                                term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOTICON_IN_ASCII);
+                            PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getString());
+                            if (returnsMatchOrNot.getMatched()) {
+                                term.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
                                 textFragments.add(term);
                                 textFragmentStarted = false;
                             } else {
@@ -195,9 +222,9 @@ public class UmigonTokenizer {
                         textFragments.add(term);
                     } else {
                         if (term.getString().codePoints().toArray().length > 1) {
-                            boolean containsOnomatopaesOrAsciiEmoticons = PatternOfInterestChecker.containsOnomatopaesOrAsciiEmoticons(term.getString());
-                            if (containsOnomatopaesOrAsciiEmoticons) {
-                                term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOTICON_IN_ASCII);
+                            PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getString());
+                            if (returnsMatchOrNot.getMatched()) {
+                                term.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
                                 textFragments.add(term);
                             } else {
                                 int[] codePointsPunct = term.getString().codePoints().toArray();

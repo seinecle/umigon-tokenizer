@@ -71,15 +71,34 @@ public class PatternOfInterestChecker {
         return null;
     }
 
-    public static boolean containsOnomatopaesOrAsciiEmoticons(String text) {
+    public static PatternOfInterest returnsMatchOrNot(String text) {
         Matcher matcher;
         for (PatternOfInterest poiLoop : patternsOfInterest) {
             matcher = poiLoop.getPattern().matcher(text);
             if (matcher.find()) {
-                return Boolean.TRUE;
+                poiLoop.setMatched(Boolean.TRUE);
+                return poiLoop;
             }
         }
-        return false;
+        PatternOfInterest poi = new PatternOfInterest();
+        poi.setMatched(Boolean.FALSE);
+        return poi;
     }
 
+
+//    public void containsTimeIndication() {
+//        Heuristic heuristic;
+//        TermLevelHeuristics termLevelHeuristics = new TermLevelHeuristics();
+//        int index = 0;
+//        for (String term : HeuristicsLoaderAtStartup.getMapH4().keySet()) {
+//            if (lc.contains(term)) {
+//                heuristic = HeuristicsLoaderAtStartup.getMapH12().get(term);
+//                String result = termLevelHeuristics.checkFeatures(heuristic, lc, lc, term);
+//                if (result != null) {
+//                    index = lc.indexOf(term);
+//                    tweet.addToListCategories(result, index);
+//                }
+//            }
+//        }
+//    }
 }
