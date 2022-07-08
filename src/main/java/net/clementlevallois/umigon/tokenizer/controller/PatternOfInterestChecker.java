@@ -4,7 +4,6 @@
  */
 package net.clementlevallois.umigon.tokenizer.controller;
 
-import com.vdurmont.emoji.EmojiParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +15,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import net.clementlevallois.umigon.model.Category;
-import net.clementlevallois.umigon.model.ResultOneHeuristics;
 import net.clementlevallois.umigon.model.PatternOfInterest;
-import net.clementlevallois.umigon.model.TypeOfTextFragment;
 
 /*
  *
