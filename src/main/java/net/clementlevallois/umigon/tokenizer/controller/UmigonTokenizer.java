@@ -26,7 +26,8 @@ import net.clementlevallois.utils.TextCleaningOps;
 public class UmigonTokenizer {
 
     public static void main(String[] args) throws IOException {
-        String text = "J'aime la \"vie\" #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
+//        String text = "J'aime la \"vie\" #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
+        String text = "Il a de vraies burnes";
         System.out.println("text: " + text);
         Set<String> languageSpecificLexicon = new HashSet();
         UmigonTokenizer controller = new UmigonTokenizer();
@@ -60,8 +61,8 @@ public class UmigonTokenizer {
 
         for (int codePoint : codePoints) {
             String stringOfCodePoint = Character.toString(codePoint);
-//            if (stringOfCodePoint.equals("😀")) {
-//                System.out.println("stop there is a 😀");
+//            if (stringOfCodePoint.equals("s")) {
+//                System.out.println("stop there is a s");
 //            }
 
             //check if this is a punctuation mark
@@ -100,6 +101,7 @@ public class UmigonTokenizer {
                 case CURR_FRAGMENT_IS_TERM:
                     if ((isCurrCodePointWhiteSpace) | (isCurrCodPointPunctuation && !term.getString().startsWith("http"))) {
                         String originalForm = term.getString();
+                        term.setOriginalForm(originalForm);
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
                         String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
@@ -219,13 +221,24 @@ public class UmigonTokenizer {
                 }
                 if (!isCurrCodePointWhiteSpace & !isCurrCodePointEmoji & term != null) {
                     if (!isCurrCodPointPunctuation) {
+                        String originalForm = term.getString();
+                        term.setOriginalForm(originalForm);
+                        String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
+                        term.setCleanedForm(cleanedForm);
+                        term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
                         textFragments.add(term);
                     } else {
                         if (term.getString().codePoints().toArray().length > 1) {
                             PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getString());
                             if (returnsMatchOrNot.getMatched()) {
-                                term.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
-                                textFragments.add(term);
+                                NonWord nonWord = new NonWord();
+                                nonWord.setIndexCardinal(term.getIndexCardinal());
+                                nonWord.setIndexOrdinal(term.getIndexOrdinal());
+                                nonWord.setString(term.getString());
+                                nonWord.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
+                                nonWord.setPoi(returnsMatchOrNot);
+                                textFragments.add(nonWord);
                             } else {
                                 int[] codePointsPunct = term.getString().codePoints().toArray();
                                 for (int codePointPunct : codePointsPunct) {
