@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import net.clementlevallois.umigon.model.NonWord;
 import net.clementlevallois.umigon.model.PatternOfInterest;
+import net.clementlevallois.umigon.model.Punctuation;
 import net.clementlevallois.umigon.model.Term;
 import net.clementlevallois.umigon.model.TextFragment;
 import net.clementlevallois.umigon.model.TypeOfTextFragment;
@@ -27,11 +28,11 @@ public class UmigonTokenizer {
 
     public static void main(String[] args) throws IOException {
 //        String text = "J'aime la \"vie\" #wow what a performance! 𝄠\nI l@@@ve it :-) 😀😀😀 😀 :((( http://allo";
-        String text = "Il a de vraies burnes";
+        String text = "Je vais super bien :-), vraiment vous êtes des champions (même toi!)";
         System.out.println("text: " + text);
         Set<String> languageSpecificLexicon = new HashSet();
         UmigonTokenizer controller = new UmigonTokenizer();
-        List<TextFragment> textFragments = controller.tokenize(text, languageSpecificLexicon);
+        List<TextFragment> textFragments = UmigonTokenizer.tokenize(text, languageSpecificLexicon);
         String beautiffiedPrint = controller.printTextFragments(textFragments);
         System.out.println(beautiffiedPrint);
     }
@@ -49,20 +50,25 @@ public class UmigonTokenizer {
         boolean isCurrCodePointTerm = false;
         boolean isCurrCodePointEmoji = false;
         boolean isCurrCodPointPunctuation = false;
+        
+        boolean dontStartNewFragment = false;
         CurrentFragment currFragment = CurrentFragment.CURR_FRAGMENT_IS_NOT_STARTED;
+        
         WhiteSpace whiteSpaceFragment = null;
         Term term = null;
+        Punctuation punctuation = null;
+        NonWord nonWord = null;
         int i = 0;
 
         int[] codePoints = text.codePoints().toArray();
 
-        System.out.println("length of the text: " + text.length());
-        System.out.println("number of code points: " + codePoints.length);
-
+//        System.out.println("length of the text: " + text.length());
+//        System.out.println("number of code points: " + codePoints.length);
         for (int codePoint : codePoints) {
+            dontStartNewFragment = false;
             String stringOfCodePoint = Character.toString(codePoint);
-//            if (stringOfCodePoint.equals("s")) {
-//                System.out.println("stop there is a s");
+//            if (stringOfCodePoint.equals("n")) {
+//                System.out.println("stop there is a n");
 //            }
 
             //check if this is a punctuation mark
@@ -87,14 +93,14 @@ public class UmigonTokenizer {
                         textFragmentStarted = false;
                     } else {
                         textFragments.add(whiteSpaceFragment);
-                        textFragmentStarted = false;
-                        term = new Term();
+                        nonWord = new NonWord();
                         currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
-                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
-                        term.setIndexCardinal(i);
-                        term.setIndexOrdinal(textFragments.size());
-                        term.addStringToString(stringOfCodePoint);
-                        textFragments.add(term);
+                        nonWord.setTypeOfTextFragmentEnum(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
+                        nonWord.setIndexCardinal(i);
+                        nonWord.setIndexOrdinal(textFragments.size());
+                        nonWord.addStringToString(stringOfCodePoint);
+                        textFragments.add(nonWord);
+                        textFragmentStarted = false;
                     }
                     break;
 
@@ -112,11 +118,11 @@ public class UmigonTokenizer {
                         // they must be detected to be attributed a specific type (different from "term"):
                         PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getCleanedAndStrippedForm());
                         if (returnsMatchOrNot.getMatched()) {
-                            NonWord nonWord = new NonWord();
+                            nonWord = new NonWord();
                             nonWord.setIndexCardinal(term.getIndexCardinal());
                             nonWord.setIndexOrdinal(term.getIndexOrdinal());
                             nonWord.setString(term.getString());
-                            nonWord.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
+                            nonWord.setTypeOfTextFragmentEnum(returnsMatchOrNot.getTypeOfTextFragmentEnum());
                             nonWord.setPoi(returnsMatchOrNot);
                             textFragments.add(nonWord);
                         } else {
@@ -128,67 +134,78 @@ public class UmigonTokenizer {
                     } else if (isCurrCodePointEmoji) {
                         textFragments.add(term);
                         textFragmentStarted = false;
-                        term = new Term();
-                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
+                        nonWord = new NonWord();
+                        nonWord.setTypeOfTextFragmentEnum(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
                         currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
-                        term.setIndexCardinal(i);
-                        term.setIndexOrdinal(textFragments.size());
-                        term.addStringToString(stringOfCodePoint);
-                        textFragments.add(term);
+                        nonWord.setIndexCardinal(i);
+                        nonWord.setIndexOrdinal(textFragments.size());
+                        nonWord.addStringToString(stringOfCodePoint);
+                        textFragments.add(nonWord);
                     }
                     break;
 
                 case CURR_FRAGMENT_IS_PUNCT:
-                    if (!isCurrCodPointPunctuation) {
-                        if (term.getString().codePoints().toArray().length > 1) {
-                            PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getString());
-                            if (returnsMatchOrNot.getMatched()) {
-                                term.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
-                                textFragments.add(term);
+                    PatternOfInterest poi = PatternOfInterestChecker.returnsMatchOrNot(punctuation.getString());
+                    if (poi.getMatched()) {
+                        nonWord = new NonWord();
+                        nonWord.setPoi(poi);
+                        nonWord.setString(punctuation.getString());
+                        nonWord.setTypeOfTextFragmentEnum(poi.getTypeOfTextFragmentEnum());
+                        textFragments.add(nonWord);
+                        textFragmentStarted = false;
+                        break;
+                    }
+                    if (isCurrCodPointPunctuation) {
+                        String currPunctWithNewChar = punctuation.getString() + stringOfCodePoint;
+                        if (currPunctWithNewChar.codePoints().toArray().length > 1) {
+                            poi = PatternOfInterestChecker.returnsMatchOrNot(currPunctWithNewChar);
+                            if (poi.getMatched()) {
+                                nonWord = new NonWord();
+                                nonWord.setPoi(poi);
+                                nonWord.setString(currPunctWithNewChar);
+                                nonWord.setTypeOfTextFragmentEnum(poi.getTypeOfTextFragmentEnum());
+                                textFragments.add(nonWord);
                                 textFragmentStarted = false;
+                                dontStartNewFragment = true;
+                                break;
                             } else {
-                                int[] codePointsPunct = term.getString().codePoints().toArray();
-                                for (int codePointPunct : codePointsPunct) {
-                                    String punct = Character.toString(codePointPunct);
-                                    term = new Term();
-                                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
-                                    currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
-                                    term.setIndexCardinal(i);
-                                    term.setIndexOrdinal(textFragments.size());
-                                    term.addStringToString(punct);
-                                    textFragments.add(term);
-                                }
-                                textFragmentStarted = false;
+                                punctuation.addStringToString(stringOfCodePoint);
                             }
-                        } else {
-                            textFragments.add(term);
-                            textFragmentStarted = false;
                         }
                     } else {
-                        term.addStringToString(stringOfCodePoint);
+                        int[] codePointsPunct = punctuation.getString().codePoints().toArray();
+                        currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
+                        for (int codePointPunct : codePointsPunct) {
+                            String punct = Character.toString(codePointPunct);
+                            punctuation = new Punctuation();
+                            punctuation.setIndexCardinal(i);
+                            punctuation.setIndexOrdinal(textFragments.size());
+                            punctuation.addStringToString(punct);
+                            textFragments.add(punctuation);
+                        }
+                        textFragmentStarted = false;
                     }
                     break;
 
                 case CURR_FRAGMENT_IS_EMOJI:
                     if (isCurrCodePointEmoji) {
-                        term = new Term();
+                        nonWord = new NonWord();
                         currFragment = CurrentFragment.CURR_FRAGMENT_IS_EMOJI;
-                        term.setIndexCardinal(i);
-                        term.setIndexOrdinal(textFragments.size());
-                        term.addStringToString(stringOfCodePoint);
-                        term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
-                        textFragments.add(term);
+                        nonWord.setIndexCardinal(i);
+                        nonWord.setIndexOrdinal(textFragments.size());
+                        nonWord.addStringToString(stringOfCodePoint);
+                        nonWord.setTypeOfTextFragmentEnum(TypeOfTextFragment.TypeOfTextFragmentEnum.EMOJI);
+                        textFragments.add(nonWord);
                         textFragmentStarted = false;
                     }
                     break;
 
             }
 
-            if (!textFragmentStarted) {
+            if (!textFragmentStarted & !dontStartNewFragment) {
                 if (isCurrCodePointWhiteSpace) {
                     textFragmentStarted = true;
                     whiteSpaceFragment = new WhiteSpace();
-                    whiteSpaceFragment.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.WHITE_SPACE);
                     whiteSpaceFragment.setIndexCardinal(i);
                     whiteSpaceFragment.setIndexOrdinal(textFragments.size());
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_WHITE_SPACE;
@@ -199,19 +216,17 @@ public class UmigonTokenizer {
                 } else if (!isCurrCodePointEmoji & !isCurrCodPointPunctuation) {
                     textFragmentStarted = true;
                     term = new Term();
-                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.TERM);
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_TERM;
                     term.setIndexCardinal(i);
                     term.setIndexOrdinal(textFragments.size());
                     term.addStringToString(stringOfCodePoint);
                 } else if (isCurrCodPointPunctuation) {
                     textFragmentStarted = true;
-                    term = new Term();
-                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
+                    punctuation = new Punctuation();
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
-                    term.setIndexCardinal(i);
-                    term.setIndexOrdinal(textFragments.size());
-                    term.addStringToString(stringOfCodePoint);
+                    punctuation.setIndexCardinal(i);
+                    punctuation.setIndexOrdinal(textFragments.size());
+                    punctuation.addStringToString(stringOfCodePoint);
                 }
             }
             i++;
@@ -232,24 +247,23 @@ public class UmigonTokenizer {
                         if (term.getString().codePoints().toArray().length > 1) {
                             PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getString());
                             if (returnsMatchOrNot.getMatched()) {
-                                NonWord nonWord = new NonWord();
+                                nonWord = new NonWord();
                                 nonWord.setIndexCardinal(term.getIndexCardinal());
                                 nonWord.setIndexOrdinal(term.getIndexOrdinal());
                                 nonWord.setString(term.getString());
-                                nonWord.setTypeOfTextFragment(returnsMatchOrNot.getTypeOfTextFragment());
+                                nonWord.setTypeOfTextFragmentEnum(returnsMatchOrNot.getTypeOfTextFragmentEnum());
                                 nonWord.setPoi(returnsMatchOrNot);
                                 textFragments.add(nonWord);
                             } else {
-                                int[] codePointsPunct = term.getString().codePoints().toArray();
+                                int[] codePointsPunct = punctuation.getString().codePoints().toArray();
                                 for (int codePointPunct : codePointsPunct) {
                                     String punct = Character.toString(codePointPunct);
-                                    term = new Term();
+                                    punctuation = new Punctuation();
                                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_PUNCT;
-                                    term.setIndexCardinal(i);
-                                    term.setIndexOrdinal(textFragments.size());
-                                    term.addStringToString(punct);
-                                    term.setTypeOfTextFragment(TypeOfTextFragment.TypeOfTextFragmentEnum.PUNCTUATION);
-                                    textFragments.add(term);
+                                    punctuation.setIndexCardinal(i);
+                                    punctuation.setIndexOrdinal(textFragments.size());
+                                    punctuation.addStringToString(punct);
+                                    textFragments.add(punctuation);
                                 }
                             }
                         } else {

@@ -47,6 +47,9 @@ public class PatternOfInterestChecker {
                     Category category = new Category(categoryId);
                     poi.getCategories().add(category);
                 }
+                if (elements[4] == null){
+                    System.out.println("stop");
+                }
                 poi.setTypeOfTextFragment(elements[4]);
                 patternsOfInterest.add(poi);
             }
