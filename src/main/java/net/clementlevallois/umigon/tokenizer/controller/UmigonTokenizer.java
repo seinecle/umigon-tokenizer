@@ -44,7 +44,8 @@ public class UmigonTokenizer {
     }
 
     public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) throws IOException {
-        PatternOfInterestChecker.loadPatternsOfInterest();
+        PatternOfInterestChecker poiChecker = new PatternOfInterestChecker();
+        poiChecker.loadPatternsOfInterest();
         List<TextFragment> textFragments = new ArrayList();
 
         boolean textFragmentStarted = false;
@@ -119,7 +120,7 @@ public class UmigonTokenizer {
                         // some term fragments can be onomatopaes (wooow) or texto speak (lol, rofl)
                         // we call them 'non words' (for lack of better name)
                         // they must be detected to be attributed a specific type (different from "term"):
-                        PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getCleanedAndStrippedForm());
+                        PatternOfInterest returnsMatchOrNot = poiChecker.returnsMatchOrNot(term.getCleanedAndStrippedForm());
                         if (returnsMatchOrNot.getMatched()) {
                             nonWord = new NonWord();
                             nonWord.setIndexCardinal(term.getIndexCardinal());
@@ -143,11 +144,12 @@ public class UmigonTokenizer {
                         emoji.setIndexOrdinal(textFragments.size());
                         emoji.addStringToOriginalForm(stringOfCodePoint);
                         emoji.setSemiColonForm(EmojiParser.parseToAliases(stringOfCodePoint));
-                        textFragments.add(emoji);                    }
+                        textFragments.add(emoji);
+                    }
                     break;
 
                 case CURR_FRAGMENT_IS_PUNCT:
-                    PatternOfInterest poi = PatternOfInterestChecker.returnsMatchOrNot(punctuation.getOriginalForm());
+                    PatternOfInterest poi = poiChecker.returnsMatchOrNot(punctuation.getOriginalForm());
                     if (poi.getMatched()) {
                         nonWord = punctuation.toNonWord(poi, punctuation.getOriginalForm());
                         textFragments.add(nonWord);
@@ -157,7 +159,7 @@ public class UmigonTokenizer {
                     if (isCurrCodPointPunctuation) {
                         String currPunctWithNewChar = punctuation.getOriginalForm() + stringOfCodePoint;
                         if (currPunctWithNewChar.codePoints().toArray().length > 1) {
-                            poi = PatternOfInterestChecker.returnsMatchOrNot(currPunctWithNewChar);
+                            poi = poiChecker.returnsMatchOrNot(currPunctWithNewChar);
                             if (poi.getMatched()) {
                                 nonWord = punctuation.toNonWord(poi, currPunctWithNewChar);
                                 textFragments.add(nonWord);
@@ -247,7 +249,7 @@ public class UmigonTokenizer {
                         textFragments.add(term);
                     } else {
                         if (term.getOriginalForm().codePoints().toArray().length > 1) {
-                            PatternOfInterest returnsMatchOrNot = PatternOfInterestChecker.returnsMatchOrNot(term.getOriginalForm());
+                            PatternOfInterest returnsMatchOrNot = poiChecker.returnsMatchOrNot(term.getOriginalForm());
                             if (returnsMatchOrNot.getMatched()) {
                                 nonWord = new NonWord();
                                 nonWord.setIndexCardinal(term.getIndexCardinal());

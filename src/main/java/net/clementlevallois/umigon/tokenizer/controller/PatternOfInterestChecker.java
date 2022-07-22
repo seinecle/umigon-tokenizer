@@ -23,9 +23,9 @@ import net.clementlevallois.umigon.model.PatternOfInterest;
  */
 public class PatternOfInterestChecker {
 
-    private static List<PatternOfInterest> patternsOfInterest = new ArrayList();
+    private List<PatternOfInterest> patternsOfInterest = new ArrayList();
 
-    public static void loadPatternsOfInterest() throws IOException {
+    public  void loadPatternsOfInterest() throws IOException {
 
         try ( // we load the patterns of interest
                  InputStream inputStream = PlaceHolderMULTI.class.getResourceAsStream("patterns_of_interest.txt")) {
@@ -47,7 +47,7 @@ public class PatternOfInterestChecker {
                     Category category = new Category(categoryId);
                     poi.getCategories().add(category);
                 }
-                if (elements[4] == null){
+                if (elements[4] == null) {
                     System.out.println("stop");
                 }
                 poi.setTypeOfTextFragment(elements[4]);
@@ -56,7 +56,7 @@ public class PatternOfInterestChecker {
         }
     }
 
-    public static String containsPercentage(String text) {
+    public String containsPercentage(String text) {
         //do we find a percentage?
         boolean res = text.matches(".*\\d%.*");
         if (res) {
@@ -71,20 +71,24 @@ public class PatternOfInterestChecker {
         return null;
     }
 
-    public static PatternOfInterest returnsMatchOrNot(String text) {
+    public PatternOfInterest returnsMatchOrNot(String text) {
         Matcher matcher;
+        PatternOfInterest toReturn = null;
         for (PatternOfInterest poiLoop : patternsOfInterest) {
             matcher = poiLoop.getPattern().matcher(text);
             if (matcher.find()) {
-                poiLoop.setMatched(Boolean.TRUE);
-                return poiLoop;
+                toReturn = poiLoop;
+                toReturn.setMatched(Boolean.TRUE);
             }
         }
-        PatternOfInterest poi = new PatternOfInterest();
-        poi.setMatched(Boolean.FALSE);
-        return poi;
+        if (toReturn == null) {
+            PatternOfInterest poi = new PatternOfInterest();
+            poi.setMatched(Boolean.FALSE);
+            return poi;
+        } else {
+            return toReturn;
+        }
     }
-
 
 //    public void containsTimeIndication() {
 //        Heuristic heuristic;
