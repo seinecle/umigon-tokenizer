@@ -258,7 +258,8 @@ public class UmigonTokenizer {
                                 nonWord.setTypeOfTextFragmentEnum(returnsMatchOrNot.getTypeOfTextFragmentEnum());
                                 nonWord.setPoi(returnsMatchOrNot);
                                 textFragments.add(nonWord);
-                            } else {
+                            } else if (punctuation!=null){
+                                
                                 int[] codePointsPunct = punctuation.getOriginalForm().codePoints().toArray();
                                 for (int codePointPunct : codePointsPunct) {
                                     String punct = Character.toString(codePointPunct);
