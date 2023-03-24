@@ -1,0 +1,46 @@
+description	regex	to lowercase	categories	type of token
+awww	(aww+)	true	11,22	ONOMATOPAE
+yesss	(yess+)	true	11,22	ONOMATOPAE
+arrgh	(arr+g)	true	12,22	ONOMATOPAE
+ouchhh	(ouu+ch+)	true	12,22	ONOMATOPAE
+yeeey or yaaaay	(y[e|a]+y)	true	11,22	ONOMATOPAE
+hahahaha	(haha)	true	11,22	ONOMATOPAE
+ewww	([^n|^j|^f|#]eww+)	true	12,22	ONOMATOPAE
+LMFAO	(lmfao+)	true	11,22	TEXTO_SPEAK
+LMAO	(lmao+)	true	11,22	TEXTO_SPEAK
+yeaaa	(yeaa+)	true	11,22	ONOMATOPAE
+yuummm	(yu+mm+)	true	11,22	ONOMATOPAE
+yeee	(yeee+)	true	11,22	ONOMATOPAE
+whyyy	(whyy+)	true	12,22	ONOMATOPAE
+helpp	(helpp+)	true	12,22	ONOMATOPAE
+nooo	(nooo+)	true	12,22	ONOMATOPAE
+wuhuu	(wu+huu+)	true	12,22	ONOMATOPAE
+buhuu	(bu+hu+)	true	12,22	ONOMATOPAE
+boooo	(booo+)	true	12,22	ONOMATOPAE
+uuugh	([u]{3,}+gh+)	true	12,22	ONOMATOPAE
+woohoo	(wo+hoo+)	true	12,22	ONOMATOPAE
+yaaaaahooooo	(ya+ho+)	true	11,22	ONOMATOPAE
+multiple exclamation marks	(!!+)	true	22	PUNCTUATION
+question mark	(\?+)	true	40	PUNCTUATION
+heart	(&lt;3)	true	11,22	EMOTICON_IN_ASCII
+heart and smileys ending in 3: <3 :3 =3	([<:=]3+)	true	11,22	EMOTICON_IN_ASCII
+smiley :)	(:\)+)	true	11	EMOTICON_IN_ASCII
+smiley :-)	(:-\)+)	true	11	EMOTICON_IN_ASCII
+smiley : )	(: \)+)	true	11	EMOTICON_IN_ASCII
+smiley :]	(:\]+)	true	11	EMOTICON_IN_ASCII
+smiley ^_^	(\^_*\^)	true	11,22	EMOTICON_IN_ASCII
+smiley :O or :D or :0 or ;p or :-p or :p	((?<!\S)(:d|:o|:0|;p|:-p|:p)(?!\S))	true	11	EMOTICON_IN_ASCII
+smiley (:	(\(:(?!\S))	true	11	EMOTICON_IN_ASCII
+smiley ;)	(;\)+)	true	11	EMOTICON_IN_ASCII
+smiley ;p	(;p+)	true	11	EMOTICON_IN_ASCII
+smiley :|	(:\|+)	true	12	EMOTICON_IN_ASCII
+smiley :S	(:S)	true	12	EMOTICON_IN_ASCII
+smiley =(	(=\(+)	true	12	EMOTICON_IN_ASCII
+smiley T_T	(T_T)	false	12	EMOTICON_IN_ASCII
+smiley :-(	(:-\(+)	true	12	EMOTICON_IN_ASCII
+smiley :-/	(:-/+)	true	12	EMOTICON_IN_ASCII
+smiley :'(	(:'\(+)	true	12	EMOTICON_IN_ASCII
+smiley :(	(:\(+)	true	12	EMOTICON_IN_ASCII
+smiley :/	(:/[^/])	true	12	EMOTICON_IN_ASCII
+kisses xxx	(xx+)	true	11	TEXTO_SPEAK
+kisses xoxoxo	((xo)\1{1,}x*o*)	true	11	TEXTO_SPEAK

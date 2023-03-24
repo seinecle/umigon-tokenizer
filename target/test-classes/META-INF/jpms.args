@@ -1,0 +1,4 @@
+--patch-module
+net.clementlevallois.umigon.tokenizer=_
+--add-reads
+net.clementlevallois.umigon.tokenizer=ALL-UNNAMED
