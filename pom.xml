@@ -15,16 +15,25 @@
 
 
     <name>umigon-tokenizer</name>
-
     <description>because splitting on whitespace is not enough</description>
     <url>https://github.com/seinecle/umigon-tokenizer</url>
-    
+    <inceptionYear>2021</inceptionYear>
+
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <id>seinecle</id>
+            <name>Clement Levallois</name>
+            <email>clementlevallois@protonmail.com</email>
+        </developer>
+    </developers>
+
+        
     <!-- Licenses -->
     <licenses>
         <license>
             <name>Creative Commons Attribution 4.0 International Public License</name>
             <url>https://creativecommons.org/licenses/by/4.0/legalcode</url>
-            <comments>CDDL License 1.0</comments>
         </license>
     </licenses>
 
@@ -35,14 +44,7 @@
         <url>https://github.com/seinecle/umigon-family</url>
     </scm>
     
-    <!-- Developers -->
-    <developers>
-        <developer>
-            <id>seinecle</id>
-            <name>Clement Levallois</name>
-            <email>clementlevallois@protonmail.com</email>
-        </developer>
-    </developers>
+    
     <dependencies>
         <dependency>
             <groupId>com.vdurmont</groupId>
@@ -157,6 +159,9 @@
                                 </signing>
                                 <deploy>
                                     <maven>
+                                        <pomchecker>
+                                            <version>1.9.0</version>
+                                        </pomchecker>
                                         <nexus2>
                                             <maven-central>
                                                 <active>ALWAYS</active>
