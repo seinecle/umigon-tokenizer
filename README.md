@@ -1,6 +1,29 @@
 # Umigon
 A family of modules for essential NLP tasks and sentiment analysis, done well.
 
+# Releases
+**Maven**
+
+<dependency>
+    <groupId>net.clementlevallois.functions</groupId>
+    <artifactId>umigon-tokenizer</artifactId>
+    <version>put the latest version here</version>
+</dependency>
+
+**Gradle**
+
+implementation group: 'net.clementlevallois.functions', name: 'umigon-tokenizer', version: 'put the latest version here'
+
+* 2023, March 28: version 0.11
+
+Fixes a critical issue. Resource files are moved to a resource folder, where they belong.
+
+
+* 2023, March 24: version 0.10
+
+Initial release
+
+
 # The umigon-tokenizer
 Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 

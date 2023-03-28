@@ -1,6 +1,5 @@
 net\clementlevallois\umigon\tokenizer\controller\PatternOfInterestChecker.class
 net\clementlevallois\umigon\tokenizer\controller\UmigonTokenizer$1.class
 module-info.class
-net\clementlevallois\umigon\tokenizer\controller\PlaceHolderMULTI.class
-net\clementlevallois\umigon\tokenizer\controller\UmigonTokenizer$CurrentFragment.class
 net\clementlevallois\umigon\tokenizer\controller\UmigonTokenizer.class
+net\clementlevallois\umigon\tokenizer\controller\UmigonTokenizer$CurrentFragment.class

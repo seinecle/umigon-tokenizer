@@ -28,7 +28,7 @@ public class PatternOfInterestChecker {
     public  void loadPatternsOfInterest() throws IOException {
 
         try ( // we load the patterns of interest
-                 InputStream inputStream = PlaceHolderMULTI.class.getResourceAsStream("patterns_of_interest.txt")) {
+                 InputStream inputStream = PatternOfInterestChecker.class.getResourceAsStream("patterns_of_interest.txt")) {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             List<String> patternsOfInterestAsTSV = br.lines().collect(Collectors.toList());
             PatternOfInterest poi;
