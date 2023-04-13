@@ -6,19 +6,21 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 
 ## Installation
 
-This is a dependency free, 112Mb jar:
-
 ```xml
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.13</version>
+	<version>0.14</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
 
 ## Releases
+
+* 2023, April 13: version 0.14
+
+Added a static method initialize() to allow the reading of the emoji file to be performed just once at the initialization phase and not each time the tokenizer is called. Made change to the Pattern Of Interest Checker to make it concurrent.
 
 * 2023, April 13: version 0.13
 

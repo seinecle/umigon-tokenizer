@@ -26,6 +26,9 @@ import net.clementlevallois.utils.TextCleaningOps;
  */
 public class UmigonTokenizer {
 
+    static boolean initialized = false;
+    static private PatternOfInterestChecker poiChecker;
+
     public static void main(String[] args) throws IOException {
 
 //        String text = "provides a fine-grained analysis";
@@ -47,9 +50,22 @@ public class UmigonTokenizer {
         CURR_FRAGMENT_IS_WHITE_SPACE, CURR_FRAGMENT_IS_PUNCTUATION, CURR_FRAGMENT_IS_NON_WORD, CURR_FRAGMENT_IS_TERM, CURR_FRAGMENT_IS_NOT_STARTED
     }
 
+    public static void initialize() {
+        try {
+            poiChecker = new PatternOfInterestChecker();
+            poiChecker.loadPatternsOfInterest();
+            initialized = true;
+        } catch (IOException ex) {
+            System.out.println("error in loading poi checker");
+        }
+
+    }
+
     public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) throws IOException {
-        PatternOfInterestChecker poiChecker = new PatternOfInterestChecker();
-        poiChecker.loadPatternsOfInterest();
+        if (!initialized) {
+            poiChecker = new PatternOfInterestChecker();
+            poiChecker.loadPatternsOfInterest();
+        }
         List<TextFragment> textFragments = new ArrayList();
         if (languageSpecificLexicon == null) {
             languageSpecificLexicon = new HashSet();

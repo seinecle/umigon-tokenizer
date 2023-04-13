@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import net.clementlevallois.umigon.model.Category;
@@ -23,7 +25,7 @@ import net.clementlevallois.umigon.model.PatternOfInterest;
  */
 public class PatternOfInterestChecker {
 
-    private List<PatternOfInterest> patternsOfInterest = new ArrayList();
+    private Set<PatternOfInterest> patternsOfInterest = ConcurrentHashMap.newKeySet();
 
     public  void loadPatternsOfInterest() throws IOException {
 
@@ -77,7 +79,10 @@ public class PatternOfInterestChecker {
         for (PatternOfInterest poiLoop : patternsOfInterest) {
             matcher = poiLoop.getPattern().matcher(text);
             if (matcher.matches()) {
-                toReturn = poiLoop;
+                toReturn = new PatternOfInterest();
+                toReturn.setCategories(poiLoop.getCategories());
+                toReturn.setTypeOfTextFragmentEnum(poiLoop.getTypeOfTextFragmentEnum());
+                toReturn.setDescription(poiLoop.getDescription());
                 toReturn.setMatched(Boolean.TRUE);
             }
         }
