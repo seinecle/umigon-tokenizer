@@ -28,9 +28,9 @@ public class UmigonTokenizer {
 
     public static void main(String[] args) throws IOException {
 
-        String text = "provides a fine-grained analysis";
+//        String text = "provides a fine-grained analysis";
 //        String text = "I love chocolate";
-//        String text = "I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
+        String text = "I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
 //        String text = "I love chocolate :-), really (esp5ecially with coffee!)";
 //        String text = "This app is amazing";
 //        String text = "nocode is the new thing :) 🤔";
@@ -51,7 +51,7 @@ public class UmigonTokenizer {
         PatternOfInterestChecker poiChecker = new PatternOfInterestChecker();
         poiChecker.loadPatternsOfInterest();
         List<TextFragment> textFragments = new ArrayList();
-        if (languageSpecificLexicon == null){
+        if (languageSpecificLexicon == null) {
             languageSpecificLexicon = new HashSet();
         }
 
@@ -62,8 +62,8 @@ public class UmigonTokenizer {
         boolean isCurrCodPointPunctuation = false;
 
         // from https://www.compart.com/en/unicode/category/Pd
-        Set<String> dashLikeCharacters = Set.of("-", "‐", "‑", "‒", "–", "—", "︱", "﹘", "﹣", "－", "_");
-        
+        Set<String> dashLikeCharacters = Set.of("-", "‐", "‑", "‒", "–", "—", "︱", "﹘", "﹣", "－", "_", "\\", "/", "|");
+
         boolean dontStartNewFragment = false;
         CurrentFragment currFragment = CurrentFragment.CURR_FRAGMENT_IS_NOT_STARTED;
 
@@ -91,7 +91,6 @@ public class UmigonTokenizer {
                 - as in: "l@@@@ve" will be accepted as one text fragment
                 - but "reached)" will be decomposed in "reached" and ")"
              */
-
             int nextCodePoint = -99;
             boolean isCodePointBeforeNextWhiteSpaceALetter = false;
             if (currFragment == CurrentFragment.CURR_FRAGMENT_IS_TERM) {
@@ -139,7 +138,7 @@ public class UmigonTokenizer {
 
                     if (isCurrCodePointWhiteSpace) {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
-                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAsciiAndRemoveApostrophs(cleanedForm);
+                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
 
@@ -164,7 +163,7 @@ public class UmigonTokenizer {
                         term.addStringToOriginalForm(stringOfCodePoint);
                     } else if (isCurrCodePointEmoji) {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
-                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAsciiAndRemoveApostrophs(cleanedForm);
+                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
                         textFragments.add(term);
@@ -172,13 +171,13 @@ public class UmigonTokenizer {
                     } else /*
                         what if we are in a term fragment and the current point is a punctuation sign?
                         - either the last character before the next whitespace will be alphabetical,
-                        -> in which case, *if the punctuation sign is NOT an hyphen*, we add the current punctuation sign to the term
+                        -> in which case, *if the punctuation sign is NOT an hyphen NOR a dash*, we add the current punctuation sign to the term
                         - or it is not, in which case we close the term and start a new text fragment
                      */ if (isCurrCodPointPunctuation && isCodePointBeforeNextWhiteSpaceALetter && !dashLikeCharacters.contains(stringOfCodePoint)) {
                         term.addStringToOriginalForm(stringOfCodePoint);
                     } else {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
-                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAsciiAndRemoveApostrophs(cleanedForm);
+                        String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
                         textFragments.add(term);
@@ -291,7 +290,7 @@ public class UmigonTokenizer {
                 if (currFragment == CurrentFragment.CURR_FRAGMENT_IS_TERM) {
                     String originalForm = term.getOriginalForm();
                     String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
-                    String cleanedAndStrippedForm = TextCleaningOps.flattenToAsciiAndRemoveApostrophs(cleanedForm);
+                    String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                     term.setCleanedForm(cleanedForm);
                     term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
                     textFragments.add(term);

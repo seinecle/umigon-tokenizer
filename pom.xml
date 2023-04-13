@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.clementlevallois.functions</groupId>
     <artifactId>umigon-tokenizer</artifactId>
-    <version>0.11</version>
+    <version>0.13</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -103,7 +103,7 @@
                 <altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>
             </properties>            
             <build>
-                <defaultGoal>deploy</defaultGoal>
+                <defaultGoal>clean deploy</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

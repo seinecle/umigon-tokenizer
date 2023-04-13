@@ -1,18 +1,30 @@
 # Umigon
 A family of modules for essential NLP tasks and sentiment analysis, done well.
 
-# Releases
-**Maven**
+## The umigon-tokenizer
+Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 
+## Installation
+
+This is a dependency free, 112Mb jar:
+
+```xml
 <dependency>
-    <groupId>net.clementlevallois.functions</groupId>
-    <artifactId>umigon-tokenizer</artifactId>
-    <version>put the latest version here</version>
+	<groupId>net.clementlevallois.functions</groupId>
+	<artifcactId>umigon-tokenizer</artifactId>
+	<version>0.13</version>
 </dependency>
+```
+Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
-**Gradle**
 
-implementation group: 'net.clementlevallois.functions', name: 'umigon-tokenizer', version: 'put the latest version here'
+## Releases
+
+* 2023, April 13: version 0.13
+
+Adds slashes and pipes ("/" "\" "|") as punctuation signs that separate a string of characters in 2 different tokens. Before that, only hyphens had the effect to split strings of characters.
+
+Apostroph signs continue NOT to split a string of chars. So "can't" will make one token ("can't"), but "I would think/believe that" would now be tokenized into "I", "would", "think", "/", "believe", "that".
 
 * 2023, March 28: version 0.11
 
@@ -24,8 +36,22 @@ Fixes a critical issue. Resource files are moved to a resource folder, where the
 Initial release
 
 
-# The umigon-tokenizer
-Why another tokenizer?? **Because splitting on whitespaces is not enough.**
+## Usage
+```java
+String text = "I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
+
+Set<String> languageSpecificLexicon = new HashSet();
+// this set is for the following purpose:
+// if the text to tokenize includes words such as "yeeees", you can provide a Set of Strings containing the word "yes". The tokenizer will make sure to store, for the token "yeeees", both the original form "yeeeees" and the cleaned form "yes".
+
+UmigonTokenizer controller = new UmigonTokenizer();
+List<TextFragment> textFragments = UmigonTokenizer.tokenize(text, languageSpecificLexicon);
+String beautiffiedPrint = controller.printTextFragments(textFragments);
+System.out.println(beautiffiedPrint);
+```
+
+
+## Example
 
 Consider this sentence:
 
@@ -121,9 +147,6 @@ text fragment:   (type: WHITE_SPACE)
 
 - each module should serve a function in a stand-alone fashion: you can use it independently from other modules.
 
-## Docs
-- see the [umigon-docs](https://github.com/seinecle/umigon-family/tree/main/umigon-docs) module to see how the tokenizer fits in the broader family of Umigon modules
-- or check the readme in each module 
 
 ## How to cite it
 "Clement Levallois. 2013. Umigon: sentiment analysis for tweets based on terms lists and heuristics. In Second Joint Conference on Lexical and Computational Semantics (*SEM), Volume 2: Proceedings of the Seventh International Workshop on Semantic Evaluation (SemEval 2013), pages 414–417, Atlanta, Georgia, USA. Association for Computational Linguistics." 
