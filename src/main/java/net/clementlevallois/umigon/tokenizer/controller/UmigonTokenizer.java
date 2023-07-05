@@ -33,7 +33,7 @@ public class UmigonTokenizer {
 
 //        String text = "provides a fine-grained analysis";
 //        String text = "I love chocolate";
-        String text = "I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
+        String text = " I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
 //        String text = "I love chocolate :-), really (esp5ecially with coffee!)";
 //        String text = "This app is amazing";
 //        String text = "nocode is the new thing :) 🤔";
