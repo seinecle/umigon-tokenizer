@@ -10,7 +10,7 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.14</version>
+	<version>0.16</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.

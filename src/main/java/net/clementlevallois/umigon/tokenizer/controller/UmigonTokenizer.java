@@ -29,23 +29,6 @@ public class UmigonTokenizer {
     static boolean initialized = false;
     static private PatternOfInterestChecker poiChecker;
 
-    public static void main(String[] args) throws IOException {
-
-//        String text = "provides a fine-grained analysis";
-//        String text = "I love chocolate";
-        String text = " I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
-//        String text = "I love chocolate :-), really (esp5ecially with coffee!)";
-//        String text = "This app is amazing";
-//        String text = "nocode is the new thing :) 🤔";
-        System.out.println("text: " + text);
-        System.out.println("");
-        Set<String> languageSpecificLexicon = new HashSet();
-        UmigonTokenizer controller = new UmigonTokenizer();
-        List<TextFragment> textFragments = UmigonTokenizer.tokenize(text, languageSpecificLexicon);
-        String beautiffiedPrint = controller.printTextFragments(textFragments);
-        System.out.println(beautiffiedPrint);
-    }
-
     private enum CurrentFragment {
         CURR_FRAGMENT_IS_WHITE_SPACE, CURR_FRAGMENT_IS_PUNCTUATION, CURR_FRAGMENT_IS_NON_WORD, CURR_FRAGMENT_IS_TERM, CURR_FRAGMENT_IS_NOT_STARTED
     }
@@ -187,7 +170,7 @@ public class UmigonTokenizer {
                     } else /*
                         what if we are in a term fragment and the current point is a punctuation sign?
                         - either the last character before the next whitespace will be alphabetical,
-                        -> in which case, *if the punctuation sign is NOT an hyphen NOR a dash*, we add the current punctuation sign to the term
+                            -> in which case, *if the punctuation sign is NOT an hyphen NOR a dash*, we add the current punctuation sign to the term
                         - or it is not, in which case we close the term and start a new text fragment
                      */ if (isCurrCodPointPunctuation && isCodePointBeforeNextWhiteSpaceALetter && !dashLikeCharacters.contains(stringOfCodePoint)) {
                         term.addStringToOriginalForm(stringOfCodePoint);
@@ -342,14 +325,5 @@ public class UmigonTokenizer {
 
     }
 
-    private String printTextFragments(List<TextFragment> textFragments) {
-        StringBuilder sb = new StringBuilder();
-        for (TextFragment text : textFragments) {
-            sb.append("text fragment: ").append(text.getOriginalForm());
-            sb.append(" (type: ").append(text.getTypeOfTextFragmentEnum()).append(")");
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
 
 }
