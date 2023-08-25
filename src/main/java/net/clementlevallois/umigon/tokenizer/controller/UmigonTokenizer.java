@@ -3,11 +3,11 @@
  */
 package net.clementlevallois.umigon.tokenizer.controller;
 
-import com.vdurmont.emoji.EmojiParser;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import net.clementlevallois.umigon.model.Emoji;
@@ -19,6 +19,7 @@ import net.clementlevallois.umigon.model.TextFragment;
 import net.clementlevallois.umigon.model.WhiteSpace;
 import net.clementlevallois.utils.RepeatedCharactersRemover;
 import net.clementlevallois.utils.TextCleaningOps;
+import net.fellbaum.jemoji.EmojiManager;
 
 /**
  *
@@ -113,8 +114,7 @@ public class UmigonTokenizer {
             isCurrCodPointPunctuation = Pattern.matches("[\\p{Punct}\\p{IsPunctuation}]", stringOfCodePoint);
 
             // check if this is an emoji
-            List<String> extractEmojis = EmojiParser.extractEmojis(stringOfCodePoint);
-            isCurrCodePointEmoji = !extractEmojis.isEmpty();
+            isCurrCodePointEmoji = EmojiManager.isEmoji(stringOfCodePoint);
 
             // check if this is a whitespace
             isCurrCodePointWhiteSpace = stringOfCodePoint.isBlank();
@@ -270,7 +270,15 @@ public class UmigonTokenizer {
                     emoji.setIndexCardinal(indexCurrentCodePoint);
                     emoji.setIndexOrdinal(textFragments.size());
                     emoji.addStringToOriginalForm(stringOfCodePoint);
-                    emoji.setSemiColonForm(EmojiParser.parseToAliases(stringOfCodePoint));
+                    Optional<net.fellbaum.jemoji.Emoji> emojiObject = EmojiManager.getEmoji(stringOfCodePoint);
+                    if (emojiObject.isPresent()) {
+                        List<String> githubAliases = emojiObject.get().getGithubAliases();
+                        if (!githubAliases.isEmpty()) {
+                            emoji.setSemiColonForm(githubAliases.get(0));
+                        } else {
+                            emoji.setSemiColonForm(emojiObject.get().getAllAliases().get(0));
+                        }
+                    }
                     textFragments.add(emoji);
                     textFragmentStarted = false;
                     currFragment = CurrentFragment.CURR_FRAGMENT_IS_NOT_STARTED;
@@ -324,6 +332,5 @@ public class UmigonTokenizer {
         return textFragments;
 
     }
-
 
 }

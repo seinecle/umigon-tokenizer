@@ -10,13 +10,18 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.16</version>
+	<version>0.17</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
 
 ## Releases
+
+* 2023, Aug 25: version 0.17
+
+Replaced the lib for emojis for a new one without vulnerability and maintained. Added tests.
+
 
 * 2023, April 13: version 0.14
 

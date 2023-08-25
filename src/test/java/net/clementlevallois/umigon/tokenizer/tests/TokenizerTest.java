@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.clementlevallois.umigon.model.TextFragment;
+import net.clementlevallois.umigon.model.TypeOfTextFragment.TypeOfTextFragmentEnum;
 import net.clementlevallois.umigon.tokenizer.controller.UmigonTokenizer;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +44,10 @@ public class TokenizerTest {
             }
             if (i == 3) {
                 Assert.assertEquals("can't", textFragments.get(3).getOriginalForm());
+            }
+            if (i == 6) {
+                Assert.assertEquals(TypeOfTextFragmentEnum.EMOTICON_IN_ASCII, textFragments.get(10).getTypeOfTextFragmentEnum());
+                Assert.assertEquals(TypeOfTextFragmentEnum.EMOJI, textFragments.get(12).getTypeOfTextFragmentEnum());
             }
             if (i == 7) {
                 Assert.assertEquals(23, textFragments.size());
