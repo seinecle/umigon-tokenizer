@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.clementlevallois.functions</groupId>
     <artifactId>umigon-tokenizer</artifactId>
-    <version>0.17</version>
+    <version>0.18</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>net.clementlevallois.functions</groupId>
             <artifactId>umigon-model</artifactId>
-            <version>0.13</version>
+            <version>0.14</version>
         </dependency>
         <dependency>
             <groupId>net.clementlevallois.utils</groupId>

@@ -10,13 +10,18 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.17</version>
+	<version>0.18</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
 
 ## Releases
+
+* 2023, Aug 28: version 0.18
+
+Updated the deps so that we have a cleaner separation of the model for texts, not text classification.
+
 
 * 2023, Aug 25: version 0.17
 

@@ -2,7 +2,7 @@
 @packages
 @argfile
 --module-path
-'C:/Users/levallois/.m2/repository/net/clementlevallois/functions/umigon-model/0.13/umigon-model-0.13.jar;C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/target/umigon-tokenizer-0.17.jar;C:/Users/levallois/.m2/repository/net/fellbaum/jemoji/1.1.6/jemoji-1.1.6.jar;C:/Users/levallois/.m2/repository/net/clementlevallois/utils/utils-core/0.13/utils-core-0.13.jar'
+'C:/Users/levallois/.m2/repository/net/fellbaum/jemoji/1.1.6/jemoji-1.1.6.jar;C:/Users/levallois/.m2/repository/net/clementlevallois/utils/utils-core/0.13/utils-core-0.13.jar;C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/target/umigon-tokenizer-0.18.jar;C:/Users/levallois/.m2/repository/net/clementlevallois/functions/umigon-model/0.14/umigon-model-0.14.jar'
 --patch-module
 net.clementlevallois.umigon.tokenizer='C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/src/main/java;C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/target/generated-sources/annotations'
 -encoding
@@ -22,31 +22,31 @@ net.clementlevallois.umigon.tokenizer='C:/Users/levallois/open/nocode-app-functi
 -docencoding
 'UTF-8'
 -doctitle
-'umigon-tokenizer 0.17 API'
+'umigon-tokenizer 0.18 API'
 -linkoffline
 'https://docs.oracle.com/en/java/javase/11/docs/api' 'C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'umigon-tokenizer 0.17 API'
+'umigon-tokenizer 0.18 API'
 net.clementlevallois.umigon.tokenizer.controller
 'C:/Users/levallois/open/nocode-app-functions/umigon-tokenizer/src/main/java/module-info.java'
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\allclasses-index.html = 1692966824167
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\allpackages-index.html = 1692966824173
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\copy.svg = 1692966824249
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\element-list = 1692966824084
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\help-doc.html = 1692966824230
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\index-all.html = 1692966824204
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\index.html = 1692966824219
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\jquery-ui.overrides.css = 1692966824292
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\member-search-index.js = 1692966824191
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\module-search-index.js = 1692966824179
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\overview-tree.html = 1692966824153
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\package-search-index.js = 1692966824183
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\script.js = 1692966824244
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search-page.js = 1692966824259
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search.html = 1692966824213
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search.js = 1692966824254
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\stylesheet.css = 1692966824238
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\tag-search-index.js = 1692966824195
-C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\type-search-index.js = 1692966824187
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\allclasses-index.html = 1693212771284
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\allpackages-index.html = 1693212771290
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\copy.svg = 1693212771359
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\element-list = 1693212771211
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\help-doc.html = 1693212771339
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\index-all.html = 1693212771316
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\index.html = 1693212771329
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\jquery-ui.overrides.css = 1693212771403
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\member-search-index.js = 1693212771304
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\module-search-index.js = 1693212771296
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\overview-tree.html = 1693212771269
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\package-search-index.js = 1693212771299
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\script.js = 1693212771353
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search-page.js = 1693212771370
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search.html = 1693212771323
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\search.js = 1693212771364
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\stylesheet.css = 1693212771348
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\tag-search-index.js = 1693212771308
+C:\Users\levallois\open\nocode-app-functions\umigon-tokenizer\target\apidocs\type-search-index.js = 1693212771302
