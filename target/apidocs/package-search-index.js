@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"net.clementlevallois.umigon.tokenizer","l":"net.clementlevallois.umigon.tokenizer.controller"}];updateSearchResults();
