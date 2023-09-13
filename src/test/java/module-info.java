@@ -6,6 +6,6 @@ open module net.clementlevallois.umigon.tokenizer.tests {
     requires net.clementlevallois.umigon.tokenizer;
     requires net.clementlevallois.umigon.model;
     requires net.clementlevallois.utils;
-    requires jemoji;
+    requires net.fellbaum.jemoji;
     requires junit;
 }
