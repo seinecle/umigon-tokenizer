@@ -10,13 +10,18 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.18</version>
+	<version>0.19</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
 
 ## Releases
+
+* 2023, Oct 10: version 0.19
+
+Removed the throwing of the IO exception. Updated tests dependencies.
+
 
 * 2023, Aug 28: version 0.18
 

@@ -3,7 +3,6 @@
  */
 package net.clementlevallois.umigon.tokenizer.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,17 +34,13 @@ public class UmigonTokenizer {
     }
 
     public static void initialize() {
-        try {
-            poiChecker = new PatternOfInterestChecker();
-            poiChecker.loadPatternsOfInterest();
-            initialized = true;
-        } catch (IOException ex) {
-            System.out.println("error in loading poi checker");
-        }
+        poiChecker = new PatternOfInterestChecker();
+        poiChecker.loadPatternsOfInterest();
+        initialized = true;
 
     }
 
-    public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) throws IOException {
+    public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) {
         if (!initialized) {
             poiChecker = new PatternOfInterestChecker();
             poiChecker.loadPatternsOfInterest();

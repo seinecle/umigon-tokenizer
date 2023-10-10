@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -28,10 +26,10 @@ public class PatternOfInterestChecker {
 
     private Set<PatternOfInterest> patternsOfInterest = ConcurrentHashMap.newKeySet();
 
-    public  void loadPatternsOfInterest() throws IOException {
+    public void loadPatternsOfInterest() {
 
         try ( // we load the patterns of interest
-                 InputStream inputStream = PatternOfInterestChecker.class.getResourceAsStream("patterns_of_interest.txt")) {
+                InputStream inputStream = PatternOfInterestChecker.class.getResourceAsStream("patterns_of_interest.txt")) {
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             List<String> patternsOfInterestAsTSV = br.lines().collect(Collectors.toList());
             PatternOfInterest poi;
@@ -56,6 +54,8 @@ public class PatternOfInterestChecker {
                 poi.setTypeOfTextFragment(elements[4]);
                 patternsOfInterest.add(poi);
             }
+        } catch (IOException ex) {
+            System.out.println("error when loading patterns in tokenizer");
         }
     }
 

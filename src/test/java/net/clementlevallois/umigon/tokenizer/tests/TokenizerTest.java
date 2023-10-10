@@ -3,7 +3,6 @@
  */
 package net.clementlevallois.umigon.tokenizer.tests;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +19,7 @@ import org.junit.Test;
 public class TokenizerTest {
 
     @Test
-    public void proceedToTests() throws IOException {
+    public void proceedToTests() {
         String text1 = "provides a fine-grained analysis";
         String text2 = "I love chocolate";
         String text3 = " I can't *wait*  to see this performance! 𝄠\nI will l@@@ve it :-) 😀😀😀 😀 :((( ";
