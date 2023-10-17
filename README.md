@@ -10,13 +10,17 @@ Why another tokenizer?? **Because splitting on whitespaces is not enough.**
 <dependency>
 	<groupId>net.clementlevallois.functions</groupId>
 	<artifcactId>umigon-tokenizer</artifactId>
-	<version>0.19</version>
+	<version>0.20</version>
 </dependency>
 ```
 Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.functions/umigon-tokenizer) to see the latest version.
 
 
 ## Releases
+
+* 2023, Oct 17: version 0.20
+
+Upgraded the emoji dep to 1.3.0. Fixed a part where looking for the alias of an emoji could return a NPE.
 
 * 2023, Oct 10: version 0.19
 
