@@ -6,6 +6,7 @@ package net.clementlevallois.umigon.tokenizer.tests;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.clementlevallois.umigon.model.Emoji;
 import net.clementlevallois.umigon.model.TextFragment;
 import net.clementlevallois.umigon.model.TypeOfTextFragment.TypeOfTextFragmentEnum;
 import net.clementlevallois.umigon.tokenizer.controller.UmigonTokenizer;
@@ -27,7 +28,8 @@ public class TokenizerTest {
         String text5 = "This app is amazing";
         String text6 = "nocode is the new thing :) 🤔";
         String text7 = "this is ‘Beautiful And Sad At The Same Time’, right.";
-        List<String> texts = List.of(text1, text2, text3, text4, text5, text6, text7);
+        String text8 = "😊😊😊😊😊😊";
+        List<String> texts = List.of(text1, text2, text3, text4, text5, text6, text7, text8);
         int i = 1;
         for (String text : texts) {
 //            System.out.println("text: " + text);
@@ -50,6 +52,11 @@ public class TokenizerTest {
             }
             if (i == 7) {
                 Assert.assertEquals(23, textFragments.size());
+            }
+            if (i == 8) {
+                Emoji tf = (Emoji)textFragments.get(0);
+                Assert.assertEquals(tf.getOriginalForm(), "😊");
+                Assert.assertEquals(tf.getSemiColonForm(), ":blush:");
             }
             i++;
         }

@@ -18,9 +18,9 @@ Or [check on Maven](https://central.sonatype.com/artifact/net.clementlevallois.f
 
 ## Releases
 
-* 2023, Oct 17: version 0.20
+* 2023, Oct 17: version 0.21
 
-Upgraded the emoji dep to 1.3.0. Fixed a part where looking for the alias of an emoji could return a NPE.
+Upgraded the emoji dep to 1.3.0. Fixed a part where looking for the alias of an emoji could return a NPE. Fixed a regression where this NPE fix messed up with the semi-colon form of emojis. Addd a test for this.
 
 * 2023, Oct 10: version 0.19
 

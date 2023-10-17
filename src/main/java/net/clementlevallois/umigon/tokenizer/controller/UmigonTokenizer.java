@@ -267,9 +267,14 @@ public class UmigonTokenizer {
                     emoji.addStringToOriginalForm(stringOfCodePoint);
                     Optional<net.fellbaum.jemoji.Emoji> emojiObject = EmojiManager.getEmoji(stringOfCodePoint);
                     if (emojiObject.isPresent()) {
-                        List<String> aliases = emojiObject.get().getAllAliases();
+                        List<String> aliases = emojiObject.get().getGithubAliases();
                         if (!aliases.isEmpty()) {
                             emoji.setSemiColonForm(aliases.get(0));
+                        } else {
+                            aliases = emojiObject.get().getSlackAliases();
+                            if (!aliases.isEmpty()) {
+                                emoji.setSemiColonForm(aliases.get(0));
+                            }
                         }
                     }
                     textFragments.add(emoji);
