@@ -36,7 +36,7 @@ public class TokenizerTest {
 //            System.out.println("");
             Set<String> languageSpecificLexicon = new HashSet();
             List<TextFragment> textFragments = UmigonTokenizer.tokenize(text, languageSpecificLexicon);
-            String beautiffiedPrint = printTextFragments(textFragments);
+            String beautifiedPrint = printTextFragments(textFragments);
             if (i == 1) {
                 Assert.assertEquals(9, textFragments.size());
             }

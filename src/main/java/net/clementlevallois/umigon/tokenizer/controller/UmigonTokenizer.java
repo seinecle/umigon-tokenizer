@@ -37,13 +37,11 @@ public class UmigonTokenizer {
         poiChecker = new PatternOfInterestChecker();
         poiChecker.loadPatternsOfInterest();
         initialized = true;
-
     }
 
     public static List<TextFragment> tokenize(String text, Set<String> languageSpecificLexicon) {
         if (!initialized) {
-            poiChecker = new PatternOfInterestChecker();
-            poiChecker.loadPatternsOfInterest();
+            initialize();
         }
         List<TextFragment> textFragments = new ArrayList();
         if (languageSpecificLexicon == null) {
@@ -74,10 +72,6 @@ public class UmigonTokenizer {
 
             int currentCodePoint = codePoints[indexCurrentCodePoint];
             String stringOfCodePoint = Character.toString(currentCodePoint);
-
-//            if (stringOfCodePoint.equals(",")) {
-//                System.out.println("stop there is a ,");
-//            }
 
             /* if we have started a text fragment of the type "term":
                 - we want to check whether the last character before the next whote space is a letter
@@ -322,13 +316,9 @@ public class UmigonTokenizer {
                             textFragments.add(punctuation);
                         }
                     }
-
                 }
             }
         }
-
         return textFragments;
-
     }
-
 }
