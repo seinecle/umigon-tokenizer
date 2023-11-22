@@ -74,7 +74,7 @@ public class UmigonTokenizer {
             String stringOfCodePoint = Character.toString(currentCodePoint);
 
             /* if we have started a text fragment of the type "term":
-                - we want to check whether the last character before the next whote space is a letter
+                - we want to check whether the last character before the next white space is a letter
                 - if so, down below the logic of the tokenizer will leverage this info to accept punctuation signs in the text fragment
                 - BUT NOT hyphens and similar chars
                 - as in: "l@@@@ve" will be accepted as one text fragment
