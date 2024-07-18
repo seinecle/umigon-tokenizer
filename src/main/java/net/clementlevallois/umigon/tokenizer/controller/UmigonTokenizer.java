@@ -126,6 +126,7 @@ public class UmigonTokenizer {
 
                     if (isCurrCodePointWhiteSpace) {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                        cleanedForm = cleanedForm.replaceAll("[’ʼ]", "'");
                         String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
@@ -151,6 +152,7 @@ public class UmigonTokenizer {
                         term.addStringToOriginalForm(stringOfCodePoint);
                     } else if (isCurrCodePointEmoji) {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                        cleanedForm = cleanedForm.replaceAll("[’ʼ]", "'");
                         String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
@@ -165,6 +167,7 @@ public class UmigonTokenizer {
                         term.addStringToOriginalForm(stringOfCodePoint);
                     } else {
                         String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                        cleanedForm = cleanedForm.replaceAll("[’ʼ]", "'");
                         String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                         term.setCleanedForm(cleanedForm);
                         term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
@@ -289,6 +292,7 @@ public class UmigonTokenizer {
                 if (currFragment == CurrentFragment.CURR_FRAGMENT_IS_TERM) {
                     String originalForm = term.getOriginalForm();
                     String cleanedForm = RepeatedCharactersRemover.repeatedCharacters(originalForm, languageSpecificLexicon);
+                    cleanedForm = cleanedForm.replaceAll("[’ʼ]", "'");
                     String cleanedAndStrippedForm = TextCleaningOps.flattenToAscii(cleanedForm);
                     term.setCleanedForm(cleanedForm);
                     term.setCleanedAndStrippedForm(cleanedAndStrippedForm);
